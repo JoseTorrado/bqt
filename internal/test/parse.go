@@ -1,4 +1,4 @@
-package bqt
+package test
 
 import (
 	"encoding/csv"
@@ -11,12 +11,6 @@ import (
 
 	"github.com/goccy/go-yaml"
 )
-
-type Replacement struct {
-	TableFullName  string
-	ReplaceSql     string
-	TableShortName string
-}
 
 /*
 returns a Test structure given a filepath

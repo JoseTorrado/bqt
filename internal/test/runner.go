@@ -1,4 +1,4 @@
-package bqt
+package test
 
 import (
 	"context"
@@ -16,29 +16,6 @@ import (
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
-
-type Mock struct {
-	Filepath string            `yaml:"filepath"`
-	Types    map[string]string `yaml:"types"`
-}
-
-type Output struct {
-	Name string `yaml:"name"`
-}
-
-type Test struct {
-	SourceFile  string
-	Name        string          `yaml:"name"`
-	File        string          `yaml:"file"`
-	Mocks       map[string]Mock `yaml:"mocks"`
-	Output      Mock            `yaml:"output"`
-	FileContent string
-}
-
-type SQLMock struct {
-	Sql     string
-	Columns []string
-}
 
 // COnverts each row of the csv into a sql statement
 func mockInputToSql(columnName string, value string, columnType string) string {

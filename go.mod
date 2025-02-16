@@ -1,4 +1,4 @@
-module github.com/dav009/bqt
+module github.com/JoseTorrado/bqt
 
 go 1.21
 

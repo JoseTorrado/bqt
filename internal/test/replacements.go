@@ -1,14 +1,14 @@
-package bqt
+package test
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"regexp"
 	"strings"
 )
 
 /*
-   Given a SQL query and a replacement Struct, it applies the recplament on the SQL and returns a new SQL query.   References to a Table are replaced
+Given a SQL query and a replacement Struct, it applies the recplament on the SQL and returns a new SQL query.   References to a Table are replaced
 */
 func Replace(sql string, replacement Replacement) string {
 
@@ -27,8 +27,8 @@ func Replace(sql string, replacement Replacement) string {
 }
 
 /*
-   Given the SQL code of a model and an Expected Output mock,
-   This function returns a SQL  query which asserts that the output table of SQL is equal to the data contained in the mock
+Given the SQL code of a model and an Expected Output mock,
+This function returns a SQL  query which asserts that the output table of SQL is equal to the data contained in the mock
 */
 func queryMinusMock(sql string, m Mock) (string, error) {
 
@@ -72,14 +72,8 @@ func mockMinusQuery(sql string, output Mock) (string, error) {
 	return fmt.Sprintf("SELECT %s FROM( %s ) \n  EXCEPT DISTINCT \n SELECT %s FROM (%s)", columns, mockedSql.Sql, columns, sql), nil
 }
 
-type SQLTestQuery struct {
-	ExpectedMinusQuery  string
-	QueryMinusExpected  string
-	QueryWithMockedData string
-}
-
 func ReadContents(path string) (string, error) {
-	content, err := ioutil.ReadFile(path)
+	content, err := os.ReadFile(path)
 	if err != nil {
 		return "", err
 	}
@@ -88,7 +82,7 @@ func ReadContents(path string) (string, error) {
 }
 
 /*
-   Given a Test it generates the SQL code that mocks data, run the needed logic and asserts the output data
+Given a Test it generates the SQL code that mocks data, run the needed logic and asserts the output data
 */
 func GenerateTestSQL(t Test) (SQLTestQuery, error) {
 	queryWithMockedData, err := sql(t.FileContent, t.Mocks)
