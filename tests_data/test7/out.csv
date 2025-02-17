@@ -1,0 +1,9 @@
+id,category,price,cnt,avg_price,price_category
+7,Clothing,50,2,65,Below Average
+8,Clothing,80,2,65,Above Average
+1,Electronics,100,3,150,Below Average
+3,Electronics,150,3,150,Below Average
+2,Electronics,200,3,150,Above Average
+5,Furniture,250,3,316.67,Below Average
+4,Furniture,300,3,316.67,Below Average
+6,Furniture,400,3,316.67,Above Average

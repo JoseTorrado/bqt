@@ -1,0 +1,15 @@
+name: Test-Seven
+file: tests_data/test7/query.sql
+mocks:
+  mytable:
+    filepath: tests_data/test7/in.csv
+    types:
+      id: int64
+      price: float
+output:
+  filepath: tests_data/test7/out.csv
+  types:
+    id: int64
+    price: float
+    cnt: int64
+    avg_price: float

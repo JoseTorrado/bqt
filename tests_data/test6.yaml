@@ -1,0 +1,12 @@
+name: Test-6
+file: tests_data/test6/query.sql
+mocks:
+  mytable:
+    filepath: tests_data/test6/in.csv
+    types:
+      id: int64
+output:
+  filepath: tests_data/test6/out.csv
+  types:
+    id: int64
+    name_length: int64

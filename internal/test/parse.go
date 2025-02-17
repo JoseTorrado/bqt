@@ -12,9 +12,7 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
-/*
-returns a Test structure given a filepath
-*/
+// Returns a Test structure given a filepath
 func ParseTest(path string) (Test, error) {
 
 	yamlFile, err := os.Open(path)
@@ -38,22 +36,22 @@ func ParseTest(path string) (Test, error) {
 	return test, nil
 }
 
-/*
-Given a folder returns a list of Test structs
-*/
+// Returns Test structs found in a given folder
+// TODO: Consider a Walk approahc instead to find yamls in nested directories
 func ParseFolder(path string) ([]Test, error) {
 
 	files, err := os.ReadDir(path)
-	tests := []Test{} // wheer is the test object being defined?
+	tests := []Test{}
 	if err != nil {
-		return []Test{}, err // probably shoudl return nil here instead
+		return nil, err
 	}
+
 	for _, f := range files {
 		if strings.HasSuffix(strings.ToLower(f.Name()), ".yaml") { // checks for the test configs, identifying them by the json suffix
 			fullPath := filepath.Join(path, f.Name())
 			test, err := ParseTest(fullPath) // we parse the tests now...
 			if err != nil {
-				return []Test{}, err
+				return nil, err
 			}
 			fmt.Println(fmt.Sprintf("Detected test: %v", fullPath))
 			tests = append(tests, test)

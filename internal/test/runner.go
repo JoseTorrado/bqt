@@ -49,7 +49,7 @@ func mockToSql(m Mock) (SQLMock, error) {
 		columnsValues := []string{}
 		columns := make([]string, 0)
 		// ordering columns so we can test
-		for k, _ := range row {
+		for k := range row {
 			columns = append(columns, k)
 		}
 		sort.Strings(columns)

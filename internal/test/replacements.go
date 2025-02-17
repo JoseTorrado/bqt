@@ -8,9 +8,14 @@ import (
 )
 
 /*
-Given a SQL query and a replacement Struct, it applies the recplament on the SQL and returns a new SQL query.   References to a Table are replaced
+Given a SQL query and a replacement Struct, it applies the replacement on the SQL and returns a new SQL query
+References to a Table are replaced
 */
 func Replace(sql string, replacement Replacement) string {
+	/*
+	 This has a little quirk, BQ allows for the query aliases to be defined without the "as" keyword
+	 However this replacement logic does not seem to account for that yet
+	*/
 
 	if (replacement == Replacement{}) {
 		return sql
