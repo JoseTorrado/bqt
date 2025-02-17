@@ -86,13 +86,13 @@ func RunQueryMinusExpectation(ctx context.Context, client *bigquery.Client, quer
 			return err
 		}
 
-		color.Green("\t------Unexpected Data-------")
+		fmt.Println(yellow("\t------Unexpected Data-------"))
 		for i, field := range it.Schema {
 			record := fmt.Sprintf("\t%s : %v", field.Name, row[i])
 			color.Green(record)
 
 		}
-		color.Green("\t-------------")
+		fmt.Println(yellow("\t-------------"))
 		err = errors.New("Query returned extra data compared to expectation..")
 	}
 
@@ -112,13 +112,13 @@ func RunExpectationMinusQuery(ctx context.Context, client *bigquery.Client, quer
 			}
 			return err
 		}
-		color.Red("\t------Missing Data-------")
+		fmt.Println(yellow("\t------Missing Data----------"))
 		for i, field := range it.Schema {
 			record := fmt.Sprintf("\t%s : %v", field.Name, row[i])
 			color.Red(record)
 
 		}
-		color.Red("\t-------------")
+		fmt.Println(yellow("\t-------------"))
 		err = errors.New("Expected data is missing..")
 
 	}
@@ -194,15 +194,15 @@ func RunTests(mode string, tests []Test) error {
 		testErr := errors.Join(unexpectedDataErr, missingDataErr)
 
 		if testErr == nil {
-			fmt.Printf("✅ Test Success: %+v : %+v\n", t.Name, t.SourceFile)
+			fmt.Println(green(fmt.Sprintf("Test Success: %+v : %+v\n", t.Name, t.SourceFile)))
 		} else {
 			if unexpectedDataErr != nil {
-				fmt.Printf("\tUnexpected Data Error: %+v\n", unexpectedDataErr)
+				fmt.Println(red(fmt.Sprintf("Unexpected Data Error: %+v", unexpectedDataErr)))
 			}
 			if missingDataErr != nil {
-				fmt.Printf("\tMissing Data Error: %+v\n", missingDataErr)
+				fmt.Println(red(fmt.Sprintf("Missing Data Error: %+v", missingDataErr)))
 			}
-			fmt.Printf("❌ Test Failed: %+v : %+v\n", t.Name, t.SourceFile)
+			fmt.Println(red(fmt.Sprintf("Test Failed: %+v : %+v\n", t.Name, t.SourceFile)))
 			lastErr = err
 		}
 	}
