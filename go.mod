@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go/bigquery v1.55.0
 	github.com/fatih/color v1.15.0
 	github.com/goccy/bigquery-emulator v0.4.3
+	github.com/goccy/go-yaml v1.9.5
 	github.com/stretchr/testify v1.8.2
 	github.com/urfave/cli/v2 v2.25.7
 	google.golang.org/api v0.128.0
@@ -32,7 +33,6 @@ require (
 	github.com/go-playground/validator/v10 v10.11.0 // indirect
 	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/goccy/go-json v0.10.0 // indirect
-	github.com/goccy/go-yaml v1.9.5 // indirect
 	github.com/goccy/go-zetasql v0.5.5 // indirect
 	github.com/goccy/go-zetasqlite v0.17.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
