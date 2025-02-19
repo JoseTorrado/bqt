@@ -38,6 +38,3 @@ It runs `GenerateTestSQL` on the test object:
 this ahs three steps:
 it creates a queryWithMockedData object, by calling the `sql` function
 the `sql` function: 
-
-
-
