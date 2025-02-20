@@ -91,7 +91,7 @@ func RunQueryMinusExpectation(ctx context.Context, client *bigquery.Client, quer
 	q := client.Query((query)) // I should make this more concise
 	it, err := q.Read(ctx)
 	if err != nil {
-		fmt.Println(red(fmt.Sprintf("\nERROR - %s\n", getDetailedBigQueryError(err))))
+		fmt.Println(red(fmt.Sprintf("ERROR - %s\n", getDetailedBigQueryError(err))))
 		return err
 	}
 
@@ -155,7 +155,7 @@ func RunQueryMinusExpectation(ctx context.Context, client *bigquery.Client, quer
 func RunExpectationMinusQuery(ctx context.Context, client *bigquery.Client, query string) error {
 	it, err := client.Query(query).Read(ctx)
 	if err != nil {
-		fmt.Println(red(fmt.Sprintf("\nERROR - %s\n", getDetailedBigQueryError(err))))
+		fmt.Println(red(fmt.Sprintf("ERROR - %s\n", getDetailedBigQueryError(err))))
 		return err
 	}
 
