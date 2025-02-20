@@ -37,27 +37,33 @@ func ParseTest(path string) (Test, error) {
 }
 
 // Returns Test structs found in a given folder
-// TODO: Consider a Walk approahc instead to find yamls in nested directories
-func ParseFolder(path string) ([]Test, error) {
-
-	files, err := os.ReadDir(path)
+func ParseFolder(rootPath string) ([]Test, error) {
 	tests := []Test{}
+
+	// Walk through all files and directories recursively
+	err := filepath.WalkDir(rootPath, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Check if the file has a .yaml extension
+		if !d.IsDir() && strings.HasSuffix(strings.ToLower(d.Name()), ".yaml") {
+			fmt.Println(fmt.Sprintf("Detected test: %v", path))
+
+			test, err := ParseTest(path)
+			if err != nil {
+				return fmt.Errorf("failed to parse test %v: %w", path, err)
+			}
+			tests = append(tests, test)
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return nil, err
 	}
 
-	for _, f := range files {
-		if strings.HasSuffix(strings.ToLower(f.Name()), ".yaml") { // checks for the test configs, identifying them by the json suffix
-			fullPath := filepath.Join(path, f.Name())
-			test, err := ParseTest(fullPath) // we parse the tests now...
-			if err != nil {
-				return nil, err
-			}
-			fmt.Println(fmt.Sprintf("Detected test: %v", fullPath))
-			tests = append(tests, test)
-		}
-
-	}
 	return tests, nil
 }
 
