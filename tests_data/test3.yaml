@@ -1,17 +1,17 @@
 name: simple_test
-file: tests_data/test3.sql
+file: tests_data/test3/test3.sql
 mocks:
   "`dataset`.`table1`":
-    filepath: tests_data/test3_in1.csv
+    filepath: tests_data/test3/test3_in1.csv
     types:
       column1: string
   "`dataset`.`table2`":
-    filepath: tests_data/test3_in2.csv
+    filepath: tests_data/test3/test3_in2.csv
     types:
       column2: string
       v: FLOAT64
 output:
-  filepath: tests_data/out3.csv
+  filepath: tests_data/test3/out3.csv
   types:
     column2: string
     v: FLOAT64
