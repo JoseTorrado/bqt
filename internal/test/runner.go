@@ -129,7 +129,7 @@ func RunQueryMinusExpectation(ctx context.Context, client *bigquery.Client, quer
 	table.Println()
 
 	// Print the error message
-	errorMsg := "Query returned records not in expectation"
+	errorMsg := "Query output has records not in expectation"
 	fmt.Println(red(fmt.Sprintf("ERROR - %s\n", errorMsg)))
 	return errors.New(errorMsg)
 }
@@ -195,7 +195,7 @@ func RunExpectationMinusQuery(ctx context.Context, client *bigquery.Client, quer
 	table.Println()
 
 	// Print the error message immediately after the table
-	errorMsg := "Query returned missing expected records"
+	errorMsg := "Query output is missing expected records"
 	fmt.Println(red(fmt.Sprintf("ERROR - %s\n", errorMsg)))
 	return errors.New(errorMsg)
 }
