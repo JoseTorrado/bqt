@@ -10,7 +10,7 @@ import (
 	"os"
 
 	"cloud.google.com/go/bigquery"
-	"github.com/fatih/color"
+	"github.com/alexeyco/simpletable"
 	"github.com/goccy/bigquery-emulator/server"
 	"github.com/goccy/bigquery-emulator/types"
 	"google.golang.org/api/iterator"
@@ -76,8 +76,15 @@ func RunQueryMinusExpectation(ctx context.Context, client *bigquery.Client, quer
 	if err != nil {
 		return err
 	}
-	for {
 
+	table := simpletable.New()
+	table.Header = &simpletable.Header{}
+	var cells [][]*simpletable.Cell
+	var columnNames []string
+
+	// Read and structure the data
+	firstRow := true
+	for {
 		var row []bigquery.Value
 		if err := it.Next(&row); err != nil {
 			if err == iterator.Done {
@@ -86,24 +93,60 @@ func RunQueryMinusExpectation(ctx context.Context, client *bigquery.Client, quer
 			return err
 		}
 
-		fmt.Println(yellow("\t------Unexpected Data-------"))
-		for i, field := range it.Schema {
-			record := fmt.Sprintf("\t%s : %v", field.Name, row[i])
-			color.Green(record)
-
+		// Set column headers once
+		if firstRow {
+			for _, field := range it.Schema {
+				columnNames = append(columnNames, field.Name)
+				table.Header.Cells = append(table.Header.Cells, &simpletable.Cell{
+					Align: simpletable.AlignCenter, Text: field.Name,
+				})
+			}
+			firstRow = false
 		}
-		fmt.Println(yellow("\t-------------"))
-		err = errors.New("Query returned extra data compared to expectation..")
+
+		var rowCells []*simpletable.Cell
+		for _, value := range row {
+			rowCells = append(rowCells, &simpletable.Cell{
+				Text: fmt.Sprintf("%v", value),
+			})
+		}
+		cells = append(cells, rowCells)
 	}
 
-	return err
+	if len(cells) == 0 {
+		return nil
+	}
+
+	table.Body = &simpletable.Body{Cells: cells}
+
+	table.Footer = &simpletable.Footer{
+		Cells: []*simpletable.Cell{
+			{Align: simpletable.AlignCenter, Span: len(columnNames), Text: yellow("Additional Records")},
+		},
+	}
+
+	table.SetStyle(simpletable.StyleDefault)
+	table.Println()
+
+	// Print the error message
+	errorMsg := "Query returned records not in expectation"
+	fmt.Println(red(fmt.Sprintf("ERROR - %s\n", errorMsg)))
+	return errors.New(errorMsg)
 }
 
 func RunExpectationMinusQuery(ctx context.Context, client *bigquery.Client, query string) error {
-	it, err := client.Query((query)).Read(ctx)
+	it, err := client.Query(query).Read(ctx)
 	if err != nil {
 		return err
 	}
+
+	table := simpletable.New()
+	table.Header = &simpletable.Header{}
+	var cells [][]*simpletable.Cell
+	var columnNames []string
+
+	// Read and structure the data
+	firstRow := true
 	for {
 		var row []bigquery.Value
 		if err := it.Next(&row); err != nil {
@@ -112,17 +155,49 @@ func RunExpectationMinusQuery(ctx context.Context, client *bigquery.Client, quer
 			}
 			return err
 		}
-		fmt.Println(yellow("\t------Missing Data----------"))
-		for i, field := range it.Schema {
-			record := fmt.Sprintf("\t%s : %v", field.Name, row[i])
-			color.Red(record)
 
+		// Set column headers once
+		if firstRow {
+			for _, field := range it.Schema {
+				columnNames = append(columnNames, field.Name)
+				table.Header.Cells = append(table.Header.Cells, &simpletable.Cell{
+					Align: simpletable.AlignCenter, Text: field.Name,
+				})
+			}
+			firstRow = false
 		}
-		fmt.Println(yellow("\t-------------"))
-		err = errors.New("Expected data is missing..")
 
+		// Populate the table with row values
+		var rowCells []*simpletable.Cell
+		for _, value := range row {
+			rowCells = append(rowCells, &simpletable.Cell{
+				Text: fmt.Sprintf("%v", value),
+			})
+		}
+		cells = append(cells, rowCells)
 	}
-	return err
+
+	// If no missing data, exit early
+	if len(cells) == 0 {
+		return nil
+	}
+
+	table.Body = &simpletable.Body{Cells: cells}
+
+	// Footer indicating issue
+	table.Footer = &simpletable.Footer{
+		Cells: []*simpletable.Cell{
+			{Align: simpletable.AlignCenter, Span: len(columnNames), Text: yellow("Missing Records")},
+		},
+	}
+
+	table.SetStyle(simpletable.StyleDefault)
+	table.Println()
+
+	// Print the error message immediately after the table
+	errorMsg := "Query returned missing expected records"
+	fmt.Println(red(fmt.Sprintf("ERROR - %s\n", errorMsg)))
+	return errors.New(errorMsg)
 }
 
 func RunTests(mode string, tests []Test) error {
@@ -196,12 +271,6 @@ func RunTests(mode string, tests []Test) error {
 		if testErr == nil {
 			fmt.Println(green(fmt.Sprintf("Test Success: %+v : %+v\n", t.Name, t.SourceFile)))
 		} else {
-			if unexpectedDataErr != nil {
-				fmt.Println(red(fmt.Sprintf("Unexpected Data Error: %+v", unexpectedDataErr)))
-			}
-			if missingDataErr != nil {
-				fmt.Println(red(fmt.Sprintf("Missing Data Error: %+v", missingDataErr)))
-			}
 			fmt.Println(red(fmt.Sprintf("Test Failed: %+v : %+v\n", t.Name, t.SourceFile)))
 			lastErr = err
 		}

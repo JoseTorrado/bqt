@@ -19,6 +19,7 @@ require (
 	cloud.google.com/go/iam v1.1.0 // indirect
 	cloud.google.com/go/storage v1.30.1 // indirect
 	github.com/DataDog/go-hll v1.0.2 // indirect
+	github.com/alexeyco/simpletable v1.0.0 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/apache/arrow/go/v10 v10.0.1 // indirect
 	github.com/apache/arrow/go/v12 v12.0.0 // indirect
@@ -52,7 +53,7 @@ require (
 	github.com/linkedin/goavro/v2 v2.12.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
-	github.com/mattn/go-runewidth v0.0.9 // indirect
+	github.com/mattn/go-runewidth v0.0.12 // indirect
 	github.com/mattn/go-sqlite3 v1.14.16 // indirect
 	github.com/minio/asm2plan9s v0.0.0-20200509001527-cdd76441f9d8 // indirect
 	github.com/minio/c2goasm v0.0.0-20190812172519-36a3d3bbc4f3 // indirect
@@ -60,6 +61,7 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rivo/uniseg v0.1.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/segmentio/encoding v0.3.5 // indirect
 	github.com/segmentio/parquet-go v0.0.0-20221020201645-63215c8128ff // indirect
