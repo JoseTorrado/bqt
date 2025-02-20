@@ -13,6 +13,7 @@ import (
 	"github.com/alexeyco/simpletable"
 	"github.com/goccy/bigquery-emulator/server"
 	"github.com/goccy/bigquery-emulator/types"
+	"google.golang.org/api/googleapi"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
@@ -70,10 +71,27 @@ func mockToSql(m Mock) (SQLMock, error) {
 
 }
 
+func getDetailedBigQueryError(err error) string {
+	if err == nil {
+		return ""
+	}
+
+	var gErr *googleapi.Error
+	if errors.As(err, &gErr) {
+		if len(gErr.Errors) > 0 {
+			detailedMsg := gErr.Errors[0].Message
+			return fmt.Sprintf("BigQuery Syntax Error: %s", detailedMsg)
+		}
+	}
+
+	return fmt.Sprintf("Query execution failed: %v", err)
+}
+
 func RunQueryMinusExpectation(ctx context.Context, client *bigquery.Client, query string) error {
-	q := client.Query((query))
+	q := client.Query((query)) // I should make this more concise
 	it, err := q.Read(ctx)
 	if err != nil {
+		fmt.Println(red(fmt.Sprintf("\nERROR - %s\n", getDetailedBigQueryError(err))))
 		return err
 	}
 
@@ -137,6 +155,7 @@ func RunQueryMinusExpectation(ctx context.Context, client *bigquery.Client, quer
 func RunExpectationMinusQuery(ctx context.Context, client *bigquery.Client, query string) error {
 	it, err := client.Query(query).Read(ctx)
 	if err != nil {
+		fmt.Println(red(fmt.Sprintf("\nERROR - %s\n", getDetailedBigQueryError(err))))
 		return err
 	}
 
