@@ -13,7 +13,18 @@ import (
 func main() {
 	app := &cli.App{
 		Name:  "bqt",
-		Usage: "Run tests using a local BQ emulator",
+		Usage: "BigQuery testing tool for running tests against a local emulator",
+		UsageText: `bqt [options] [test directory]
+
+	EXAMPLES:
+  # Run tests in current directory
+  bqt
+
+  # Run tests in specific directory
+  bqt path/to/tests
+
+  # Run tests using cloud mode
+  bqt --mode=cloud path/to/tests`,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "mode",

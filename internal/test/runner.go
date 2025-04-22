@@ -269,6 +269,8 @@ func RunTests(mode string, tests []Test) error {
 	defer client.Close()
 
 	var lastErr error = nil
+	var failures int = 0
+	var failedTests []string
 
 	for _, t := range tests {
 		fmt.Println("")
@@ -291,11 +293,21 @@ func RunTests(mode string, tests []Test) error {
 			fmt.Println(green(fmt.Sprintf("Test Success: %+v : %+v\n", t.Name, t.SourceFile)))
 		} else {
 			fmt.Println(red(fmt.Sprintf("Test Failed: %+v : %+v\n", t.Name, t.SourceFile)))
-			lastErr = err
+			failures++
+			failedTests = append(failedTests, t.Name)
+			lastErr = testErr
 		}
 	}
-	if lastErr != nil {
-		lastErr = errors.New("Some tests failed")
+
+	// Test Summary
+	fmt.Printf("\nTest Summary: %d tests run, %d passed, %d failed\n",
+		len(tests), len(tests)-failures, failures)
+
+	// Return an error if any of the tests failed
+	if failures > 0 {
+		return fmt.Errorf("- %d of %d tests failed: %s",
+			failures, len(tests), strings.Join(failedTests, ", "))
 	}
+
 	return lastErr
 }
